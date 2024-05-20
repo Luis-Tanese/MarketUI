@@ -1,5 +1,10 @@
 /*
-        NOTICE: If your workshop images dont work, contact Tanese#5005 or tanese on discord to add 
+        NOTICE: If your workshop images dont work, contact Tanese#5005 or tanese on discord
+
+        IMPORTANT NOTE: You will need the following modules for the script to work:
+        Widget Flags by F-Plugins | Download from Releases: https://github.com/F-Plugins/WidgetFlags-uScript
+        Effect Manager Extended by RiceField-Plugins | Download from Releases: https://github.com/RiceField-Plugins/EffectManagerExtended-uScript
+        ItemIdbyName by Tanese (WIP) | Download from Releases:
 
         Commands (players):
         /market
@@ -47,14 +52,19 @@ CustomImages = [ // Custom images for items. (if you dont need any just delete t
     Configuration:
 */
 
+// Simple Configurations
 useUconomy = false; // Set to true if you want to use uConomy
+
+// Categories Configurations (Not recommended to turn off)
 clothing = true; // If you want the clothign category
-guns = true; // If you want the guns category
+weapons = true; // If you want the weapons category
+food = true; // If you want the food category
+building = true; // If you want the building category
 vehicles = true; // If you want the vehicles category
-foods = true; // If you want the foods category
+miscellaneous = true; // If you want the miscellaneous category
 
 
-uiId = 17243;
+uiId = 17243; // Don't change (Only if you want a custom UI, contact tanese or benjaminmaigua in discord)
 
 /*
     Translations
@@ -150,22 +160,22 @@ function serverpackageinstall(){
     wait.seconds(8, packageinstall, "Market UI: Installing Packages 17/18");
     wait.seconds(9, packageinstall, "Market UI: Installing Packages 18/18");
     wait.seconds(10, packageinstall, "Market UI: Package Instalation Completed");
-    wait.seconds(10, packageinstall, "------------------------------------------------");
-    wait.seconds(10, packageinstall, "------------------------------------------------");
-    wait.seconds(10, packageinstall, "-- __  __            _        _     _   _ ___ --");
-    wait.seconds(10, packageinstall, "--|  \/  | __ _ _ __| | _____| |_  | | | |_ _|--");
-    wait.seconds(10, packageinstall, "--| |\/| |/ _` | '__| |/ / _ \ __| | | | || | --");
-    wait.seconds(10, packageinstall, "--| |  | | (_| | |  |   <  __/ |_  | |_| || | --");
-    wait.seconds(10, packageinstall, "--|_|  |_|\__,_|_|  |_|\_\___|\__|  \___/|___|--");
-    wait.seconds(10, packageinstall, "------------------------------------------------");
-    wait.seconds(10, packageinstall, "------------------------------------------------");
-    wait.seconds(10, packageinstall, "--         ___     __          ____ _____     --");
-    wait.seconds(10, packageinstall, "--        / \ \   / /    _    |  _ \_   _|    --");
-    wait.seconds(10, packageinstall, "--       / _ \ \ / /   _| |_  | | | || |      --");
-    wait.seconds(10, packageinstall, "--      / ___ \ V /   |_   _| | |_| || |      --");
-    wait.seconds(10, packageinstall, "--     /_/   \_\_/      |_|   |____/ |_|      --");
-    wait.seconds(10, packageinstall, "------------------------------------------------");
-    wait.seconds(10, packageinstall, "------------------------------------------------");
+    wait.seconds(10, packageinstall, "--------------------------------------------------");
+    wait.seconds(10, packageinstall, "--------------------------------------------------");
+    wait.seconds(10, packageinstall, "--  __  __            _        _     _   _ ___  --");
+    wait.seconds(10, packageinstall, "-- |  \/  | __ _ _ __| | _____| |_  | | | |_ _| --");
+    wait.seconds(10, packageinstall, "-- | |\/| |/ _` | '__| |/ / _ \ __| | | | || |  --");
+    wait.seconds(10, packageinstall, "-- | |  | | (_| | |  |   <  __/ |_  | |_| || |  --");
+    wait.seconds(10, packageinstall, "-- |_|  |_|\__,_|_|  |_|\_\___|\__|  \___/|___| --");
+    wait.seconds(10, packageinstall, "--------------------------------------------------");
+    wait.seconds(10, packageinstall, "--------------------------------------------------");
+    wait.seconds(10, packageinstall, "--          ___     __          ____ _____      --");
+    wait.seconds(10, packageinstall, "--         / \ \   / /    _    |  _ \_   _|     --");
+    wait.seconds(10, packageinstall, "--        / _ \ \ / /   _| |_  | | | || |       --");
+    wait.seconds(10, packageinstall, "--       / ___ \ V /   |_   _| | |_| || |       --");
+    wait.seconds(10, packageinstall, "--      /_/   \_\_/      |_|   |____/ |_|       --");
+    wait.seconds(10, packageinstall, "--------------------------------------------------");
+    wait.seconds(10, packageinstall, "--------------------------------------------------");
     wait.seconds(10, databaseinstall);
 }
 
@@ -233,32 +243,70 @@ command mk(){
     }
 }
 
+dataStorage = map();
+
+dataStorageArray = [
+    // Clothing
+    "HAT",
+    "PANTS",
+    "SHIRT",
+    "MASK",
+    "BACKPACK",
+    "VEST",
+    "GLASSES",
+    // Weapons
+    "GUN",
+    "MAGAZINE",
+    "MELEE",
+    "THROWABLE",
+    // Attachments
+    "SIGHT",
+    "TACTICAL",
+    "GRIP",
+    "BARREL",
+    "OPTIC",
+    // Food
+    "FOOD",
+    "WATER",
+    // Buildings
+    "BARRICADE",
+    "STORAGE",
+    "FARM",
+    "STRUCTURE",
+    "TANK",
+    "GENERATOR",
+    "BOX",
+    "LIBRARY",
+    "SENTRY",
+    "OIL_PUMP",
+    // Miscellaneous
+    "MEDICAL",
+    "FUEL",
+    "TOOL",
+    "BEACON",
+    "TRAP",
+    "SUPPLY",
+    "GROWER",
+    "FISHER",
+    "CLOUD",
+    "MAP",
+    "KEY",
+    "DETONATOR",
+    "CHARGE",
+    "FILTER",
+    "VEHICLE_REPAIR_TOOL",
+    "TIRE",
+    "COMPASS",
+    "ARREST_START",
+    "ARREST_END"
+];
 
 command romp(){
     permission = "market";
     allowedCaller = "player";
     execute(){
-        effectManager.sendUI(uiId, uiId, player.id);
         player.setData("MarketAdmin", false);
-        EffectManagerExtended.setVisibility(player.id, uiId, "AdminArea", "false");
-        EffectManagerExtended.setVisibility(player.id, uiId, "MainArea", "true");
-        EffectManagerExtended.setVisibility(player.id, uiId, "GunsArea", "false");
-        EffectManagerExtended.setVisibility(player.id, uiId, "ClothingArea", "false");
-        EffectManagerExtended.setVisibility(player.id, uiId, "VehicleArea", "false");
-        EffectManagerExtended.setVisibility(player.id, uiId, "FoodArea", "false");
-        
-        if(clothing != true){
-            EffectManagerExtended.setVisibility(player.id, uiId, "ClothingButn", "false");
-        }
-        if(guns != true){
-            EffectManagerExtended.setVisibility(player.id, uiId, "GunsButn", "false");
-        }
-        if(vehicles != true){
-            EffectManagerExtended.setVisibility(player.id, uiId, "VehiclesButn", "false");
-        }
-        if(foods != true){
-            EffectManagerExtended.setVisibility(player.id, uiId, "FoodsButn", "false");
-        }
+        wait.seconds(0.3, sendUi, player);
     }
 }
 
@@ -267,13 +315,7 @@ command marketadmin(){
     allowedCaller = "player";
     execute(){
         player.setData("MarketAdmin", true);
-        effectManager.sendUI(uiId, uiId, player.id);
-        EffectManagerExtended.setVisibility(player.id, uiId, "AdminArea", "true");
-        EffectManagerExtended.setVisibility(player.id, uiId, "MainArea", "false");
-        EffectManagerExtended.setVisibility(player.id, uiId, "GunsArea", "false");
-        EffectManagerExtended.setVisibility(player.id, uiId, "ClothingArea", "false");
-        EffectManagerExtended.setVisibility(player.id, uiId, "VehicleArea", "false");
-        EffectManagerExtended.setVisibility(player.id, uiId, "FoodArea", "false");
+        wait.seconds(0.3, sendUi, player);
     }
 }
 
@@ -282,7 +324,7 @@ event onEffectButtonClicked(player, button){
         EffectManagerExtended.setVisibility(player.id, uiId, "MainArea", "false");
         EffectManagerExtended.setVisibility(player.id, uiId, "ClothingArea", "true");
     }
-    if(button == "GunsButn"){
+    if(button == "WeaponsButn"){
         EffectManagerExtended.setVisibility(player.id, uiId, "MainArea", "false");
         EffectManagerExtended.setVisibility(player.id, uiId, "GunsArea", "true");
     }
@@ -294,4 +336,52 @@ event onEffectButtonClicked(player, button){
         EffectManagerExtended.setVisibility(player.id, uiId, "MainArea", "false");
         EffectManagerExtended.setVisibility(player.id, uiId, "FoodArea", "true");
     }
+}
+
+function sendUi(player){
+    if(player.getData("MarketAdmin") == true){
+        EffectManagerExtended.setVisibility(player.id, uiId, "AdminArea", "true");
+        EffectManagerExtended.setVisibility(player.id, uiId, "MainArea", "false");
+        EffectManagerExtended.setVisibility(player.id, uiId, "GunsArea", "false");
+        EffectManagerExtended.setVisibility(player.id, uiId, "ClothingArea", "false");
+        EffectManagerExtended.setVisibility(player.id, uiId, "VehicleArea", "false");
+        EffectManagerExtended.setVisibility(player.id, uiId, "FoodArea", "false");
+        WidgetFlags.show(player.id, "Modal");
+        WidgetFlags.show(player.id, "NoBlur");
+        if(clothing != true){
+            EffectManagerExtended.setVisibility(player.id, uiId, "ClothingButn", "false");
+        }
+        if(weapons != true){
+            EffectManagerExtended.setVisibility(player.id, uiId, "GunsButn", "false");
+        }
+        if(vehicles != true){
+            EffectManagerExtended.setVisibility(player.id, uiId, "VehiclesButn", "false");
+        }
+        if(foods != true){
+            EffectManagerExtended.setVisibility(player.id, uiId, "FoodsButn", "false");
+        }
+    }
+    else{
+        effectManager.sendUi(uiId, uiId, player.id);
+        EffectManagerExtended.setVisibility(player.id, uiId, "AdminArea", "false");
+        EffectManagerExtended.setVisibility(player.id, uiId, "MainArea", "true");
+        EffectManagerExtended.setVisibility(player.id, uiId, "GunsArea", "false");
+        EffectManagerExtended.setVisibility(player.id, uiId, "ClothingArea", "false");
+        EffectManagerExtended.setVisibility(player.id, uiId, "VehicleArea", "false");
+        EffectManagerExtended.setVisibility(player.id, uiId, "FoodArea", "false");
+        WidgetFlags.show(player.id, "Modal");
+        WidgetFlags.show(player.id, "NoBlur");
+        if(clothing != true){
+            EffectManagerExtended.setVisibility(player.id, uiId, "ClothingButn", "false");
+        }
+        if(weapons != true){
+            EffectManagerExtended.setVisibility(player.id, uiId, "WeaponsButn", "false");
+        }
+        if(vehicles != true){
+            EffectManagerExtended.setVisibility(player.id, uiId, "VehiclesButn", "false");
+        }
+        if(foods != true){
+            EffectManagerExtended.setVisibility(player.id, uiId, "FoodsButn", "false");
+        }
+    } 
 }
