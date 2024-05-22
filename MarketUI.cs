@@ -15,7 +15,10 @@
         /marketadmin
 */
 
-WorkshopIma ges = [ // Workshop Ids for Items (Necessary if you want to use mods)
+/*
+    ITEM INFORMATION
+*/
+WorkshopImages = [ // Workshop Ids for Items (Necessary if you want to use mods)
     [
         2710798455, // WORKSHOP_ID
         45100, // LOWEST_ID
@@ -34,6 +37,43 @@ WorkshopIma ges = [ // Workshop Ids for Items (Necessary if you want to use mods
 ];
 
 CustomImages = [ // Custom images for items. (if you dont need any just delete the arrays inside)
+    [
+        22, // ITEM_ID
+        "https://i.imgur.com/SFdYgXJ.png" // IMAGE_URL
+    ],
+    [
+        23, // ITEM_ID
+        "https://i.imgur.com/SFdYgXJ.png" // IMAGE_URL
+    ],
+    [
+        24, // ITEM_ID
+        "https://i.imgur.com/SFdYgXJ.png" // IMAGE_URL
+    ]
+];
+
+/*
+    VEHICLE INFORMATION
+*/
+
+WorkshopVehicleImages = [ // Workshop Ids for Items (Necessary if you want to use mods)
+    [
+        2710798455, // WORKSHOP_ID
+        45100, // LOWEST_ID
+        45137 // HIGHEST_ID
+    ],
+    [
+        2930460896, // WORKSHOP_ID
+        26431, // LOWEST_ID
+        26431 // HIGHEST_ID
+    ],
+    [
+        2955811332, // WORKSHOP_ID
+        27000, // LOWEST_ID
+        27099 // HIGHEST_ID
+    ]
+];
+
+CustomVehicleImages = [ // Custom images for items. (if you dont need any just delete the arrays inside)
     [
         22, // ITEM_ID
         "https://i.imgur.com/SFdYgXJ.png" // IMAGE_URL
@@ -73,7 +113,7 @@ uiId = 17243; // Don't change (Only if you want a custom UI, contact tanese or b
 translations = {
     "Market": "Market",
     "Price": "Price",
-    "": "",
+    "NothingForSale": "Nothing for sale here...",
 }
 
 
@@ -187,9 +227,35 @@ function databaseinstall(){
     database.firstRow("CREATE TABLE IF NOT EXISTS Market_AVDT(
     itemId INT NOT NULL DEFAULT 0,
     itemName VARCHAR(255) NOT NULL,
-    Price INT NOT NULL DEFAULT 0
+    category VARCHAR(255) NOT NULL,
+    price INT NOT NULL DEFAULT 0
     );");
+    foreach(itemType in dataStorageArray){
+        dataStorage.set(itemType, null);
+    }
+    foreach(image in CustomImages){
+        customImgs.set(image[0], image[1]);
+    }
+    foreach(workImage in WorkshopImages){
+        for(i = workImage[1]; i <= workImage[2]; i++){
+            workshopImgs.set(i, workImage[0].toString());
+        }
+    }
+    foreach(vehicle in CustomVehicleImages){
+        customVehicleImgs.set(vehicle[0], vehicle[1]);
+    }
+    foreach(workshopVehicle in WorkshopVehicleImages){
+        for(i = workshopVehicle[1]; i <= workshopVehicle[2]; i++){
+            workshopVehicleImgs.set(i, workshopVehicle[0].toString());
+        }
+    }
 }
+
+OfficialImageGetFormat = "https://raw.githubusercontent.com/Luis-Tanese/AV_ImageModule/main/ITEMS/Official/{0}.png"; 
+WorkshopImageGetFormat = "https://raw.githubusercontent.com/Luis-Tanese/AV_ImageModule/main/ITEMS/Workshop/{0}/{1}.png";
+
+OfficialVehicleImageGetFormat = "https://raw.githubusercontent.com/Luis-Tanese/AV_ImageModule/main/Official/{0}.png";
+WorkshopVehicleImageGetFormat = "https://raw.githubusercontent.com/Luis-Tanese/AV_ImageModule/main/Workshop/{0}.png";
 
 function decreaseBalance(player, amount){
     if(useUconomy == true){
@@ -244,6 +310,10 @@ command mk(){
 }
 
 dataStorage = map();
+workshopImgs = map();
+customImgs = map();
+customVehicleImgs = map();
+workshopVehicleImgs = map();
 
 dataStorageArray = [
     // Clothing
@@ -336,6 +406,30 @@ event onEffectButtonClicked(player, button){
         EffectManagerExtended.setVisibility(player.id, uiId, "MainArea", "false");
         EffectManagerExtended.setVisibility(player.id, uiId, "FoodArea", "true");
     }
+}
+
+function getVehicleImageById(id){
+	if(customVehicleImgs.containsKey(id)){
+		return customVehicleImgs.get(id);
+	}
+	if(id < 190){
+		return OfficialVehicleImageGetFormat.format(id);
+	}
+	else{
+		return WorkshopVehicleImageGetFormat.format(workshopVehicleImgs.get(id),id);
+	}
+}
+
+function getItemImageById(id){
+	if(customImgs.containsKey(id)){
+		return customImgs.get(id);
+	}
+	if(id < 190){
+		return OfficialImageGetFormat.format(id);
+	}
+	else{
+		return WorkshopImageGetFormat.format(workshopImages.get(id),id);
+	}
 }
 
 function sendUi(player){
