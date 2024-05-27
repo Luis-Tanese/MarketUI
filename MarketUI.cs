@@ -424,7 +424,7 @@ function getItemImageById(id){
 	if(customImgs.containsKey(id)){
 		return customImgs.get(id);
 	}
-	if(id < 190){
+	if(id < 1839){
 		return OfficialImageGetFormat.format(id);
 	}
 	else{
